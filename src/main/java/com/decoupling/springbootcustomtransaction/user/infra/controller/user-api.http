@@ -1,0 +1,18 @@
+### New user
+POST http://localhost:8080/api/users
+Content-Type: application/json
+
+{
+  "username": "Juan García",
+  "email": "juan.garcia@example.com"
+}
+
+### Another new user
+POST http://localhost:8080/api/users
+Content-Type: application/json
+
+{
+  "username": "María López",
+  "email": "maria.lopez@example.com"
+}
+
