@@ -146,7 +146,16 @@ cd spring-boot-custom-transaction
 ./mvnw spring-boot:run
 ```
 
-4. Run the tests:
+4. Test the API using the provided HTTP file:
+   - Open `http/user-api.http` in IntelliJ IDEA or VS Code with REST Client extension
+   - Or use curl:
+     ```bash
+     curl -X POST http://localhost:8080/api/users \
+       -H "Content-Type: application/json" \
+       -d '{"username":"John Doe","email":"john@example.com"}'
+     ```
+
+5. Run the tests:
 ```bash
 ./mvnw test
 ```
@@ -260,6 +269,9 @@ src/
     └── java/
         └── com/decoupling/springbootcustomtransaction/
             └── transaction/                             # Integration tests
+
+http/
+└── user-api.http                                        # 📡 REST API examples
 ```
 
 ## 🔧 Technical Details
