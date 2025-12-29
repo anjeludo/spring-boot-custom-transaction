@@ -2,10 +2,10 @@
 
 > **A proof of concept demonstrating how to decouple transaction management from the Spring Framework using Clean Architecture principles**
 
-[![Java](https://img.shields.io/badge/Java-23-orange.svg)](https://www.oracle.com/java/)
+[![Java](https://img.shields.io/badge/Java-25-orange.svg)](https://www.oracle.com/java/)
 [![Spring Boot](https://img.shields.io/badge/Spring%20Boot-4.0.1-brightgreen.svg)](https://spring.io/projects/spring-boot)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
-[![Tests](https://img.shields.io/badge/tests-10%20passed-success.svg)](src/test/java/com/decoupling/springbootcustomtransaction/transaction)
+[![Tests](https://img.shields.io/badge/tests-11%20passed-success.svg)](src/test/java/com/decoupling/springbootcustomtransaction/transaction)
 
 ## 📋 Table of Contents
 
@@ -65,12 +65,12 @@ public class UserRegistrar {
 **Architecture:**
 ```
 ┌─────────────────────────────────────────────┐
-│           Domain Layer (Pure)                │
+│           Domain Layer (Pure)               │
 │                                             │
 │  @UseCaseTransaction                        │
 │  - Custom annotation                        │
 │  - No framework dependencies                │
-│  - Defines business transaction semantics  │
+│  - Defines business transaction semantics   │
 └─────────────────────────────────────────────┘
                     ▲
                     │
@@ -117,7 +117,7 @@ This project follows **Hexagonal Architecture** (Ports & Adapters):
 - ✅ **Framework Independence**: Domain layer has zero Spring dependencies
 - ✅ **Full Transaction Support**: Propagation, timeout, rollback rules, read-only
 - ✅ **Performance Optimized**: Built-in caching with `ConcurrentHashMap`
-- ✅ **Well Tested**: 10 integration tests covering all transaction scenarios
+- ✅ **Well Tested**: 11 integration tests covering all transaction scenarios
 - ✅ **Clean Architecture**: Clear separation of concerns
 - ✅ **Production Ready**: Includes `@Role(INFRASTRUCTURE)` for proper bean ordering
 
@@ -125,14 +125,14 @@ This project follows **Hexagonal Architecture** (Ports & Adapters):
 
 ### Prerequisites
 
-- Java 23+
+- Java 25+
 - Maven 3.8+
 
 ### Installation
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/yourusername/spring-boot-custom-transaction.git
+git clone https://github.com/anjeludo/spring-boot-custom-transaction.git
 cd spring-boot-custom-transaction
 ```
 
@@ -203,17 +203,20 @@ The project includes comprehensive integration tests:
 
 ### Test Suites
 
-1. **TransactionRollbackIntegrationTest** (3 tests)
+1. **SpringBootCustomTransactionApplicationTests** (1 test)
+   - Context loading test
+
+2. **TransactionRollbackIntegrationTest** (3 tests)
    - Validates rollback on RuntimeException
    - Validates commit on success
    - Validates checked exceptions behavior
 
-2. **TransactionPropagationIntegrationTest** (4 tests)
+3. **TransactionPropagationIntegrationTest** (4 tests)
    - REQUIRED propagation
    - REQUIRES_NEW propagation
    - MANDATORY propagation
 
-3. **TransactionTimeoutIntegrationTest** (3 tests)
+4. **TransactionTimeoutIntegrationTest** (3 tests)
    - Timeout configuration
    - Within timeout behavior
    - No timeout behavior
@@ -230,8 +233,8 @@ The project includes comprehensive integration tests:
 
 **Test Results:**
 ```
-✅ 10 tests executed
-✅ 10 tests passed
+✅ 11 tests executed
+✅ 11 tests passed
 ✅ 0 failures
 ```
 

@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class UserRegistrar {
 
-    private  final UserRepository userRepository;
+    private final UserRepository userRepository;
 
     @UseCaseTransaction
     public void execute(String username, String email) {

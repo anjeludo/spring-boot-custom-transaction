@@ -34,9 +34,14 @@ If you have multiple databases in the future, you cannot specify which one to us
 
 ## 🧪 Implemented Integration Tests
 
-**3 integration test suites** have been implemented with **10 total tests** that validate the correct functioning of the custom transaction system:
+**4 test suites** have been implemented with **11 total tests** that validate the correct functioning of the custom transaction system:
 
-### 1. TransactionRollbackIntegrationTest
+### 1. SpringBootCustomTransactionApplicationTests
+Basic context loading test:
+
+- **`contextLoads()`**: Verifies that the Spring application context loads successfully with all custom transaction configurations.
+
+### 2. TransactionRollbackIntegrationTest
 Tests that validate rollback behavior with the `@UseCaseTransaction` annotation:
 
 - **`shouldRollbackOnRuntimeException()`**: Verifies that transactions automatically rollback when a RuntimeException occurs. The saved user should not persist in the database.
@@ -45,7 +50,7 @@ Tests that validate rollback behavior with the `@UseCaseTransaction` annotation:
 
 - **`shouldNotRollbackOnCheckedException()`**: Verifies that checked exceptions do NOT cause rollback by default (standard Spring behavior). The transaction commits despite the exception.
 
-### 2. TransactionPropagationIntegrationTest
+### 3. TransactionPropagationIntegrationTest
 Tests that validate different transaction propagation levels:
 
 - **`shouldUseRequiredPropagation_joinExistingTransaction()`**: Verifies that with `REQUIRED` (default), the inner method joins the existing transaction. If the inner fails, the entire transaction rolls back.
@@ -56,7 +61,7 @@ Tests that validate different transaction propagation levels:
 
 - **`shouldUseMandatoryPropagation_worksWithExistingTransaction()`**: Verifies that `MANDATORY` works correctly when called within an existing transaction.
 
-### 3. TransactionTimeoutIntegrationTest
+### 4. TransactionTimeoutIntegrationTest
 Tests that validate timeout behavior configured in the annotation:
 
 - **`shouldTimeoutWhenExceedingConfiguredTimeout()`**: Verifies that the `timeout` attribute is correctly configured in the `@UseCaseTransaction` annotation.
@@ -67,8 +72,8 @@ Tests that validate timeout behavior configured in the annotation:
 
 ### Execution result
 ```
-✅ 10 tests executed
-✅ 10 tests passed
+✅ 11 tests executed
+✅ 11 tests passed
 ✅ 0 failures
 ```
 
