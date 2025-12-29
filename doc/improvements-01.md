@@ -1,92 +1,92 @@
-# Mejoras Identificadas - Validación del Sistema de Transacciones Personalizado
+# Identified Improvements - Custom Transaction System Validation
 
-## ⚠️ Problemas Identificados
+## ⚠️ Identified Issues
 
-### 1. **Falta el atributo `noRollbackFor`**
-Tu anotación solo tiene `rollbackFor` pero no `noRollbackFor`. Esto limita el control sobre qué excepciones NO deben causar rollback.
+### 1. **Missing `noRollbackFor` attribute**
+Your annotation only has `rollbackFor` but not `noRollbackFor`. This limits control over which exceptions should NOT cause rollback.
 
-### 2. **Falta soporte para Isolation Level**
-No puedes controlar el nivel de aislamiento de las transacciones (READ_COMMITTED, SERIALIZABLE, etc.)
+### 2. **Missing Isolation Level support**
+You cannot control the transaction isolation level (READ_COMMITTED, SERIALIZABLE, etc.)
 
-### 3. **No soporta múltiples Transaction Managers**
-Si en el futuro tienes múltiples bases de datos, no puedes especificar cuál usar.
+### 3. **Does not support multiple Transaction Managers**
+If you have multiple databases in the future, you cannot specify which one to use.
 
-## ✅ Lo que está bien hecho
+## ✅ What's Well Done
 
-1. **Patrón de desacoplamiento correcto** - La anotación está en `shared/domain`, la infraestructura en `shared/infra`
-2. **Arquitectura hexagonal respetada** - UserRegistrar usa la anotación del dominio
-3. **Configuración AOP correcta** - El advisor y el interceptor están bien configurados
-4. **Funciona correctamente** - Los tests pasan y la aplicación arranca
-5. **Sistema de caché implementado** - `UseCaseTransactionAttributeSource` usa `ConcurrentHashMap` para evitar reflexión repetida (✅ IMPLEMENTADO)
-6. **Cobertura de tests completa** - Suite completa de tests de integración validando transacciones (✅ IMPLEMENTADO)
+1. **Correct decoupling pattern** - The annotation is in `shared/domain`, infrastructure in `shared/infra`
+2. **Hexagonal architecture respected** - UserRegistrar uses the domain annotation
+3. **Correct AOP configuration** - The advisor and interceptor are properly configured
+4. **Works correctly** - Tests pass and the application starts
+5. **Cache system implemented** - `UseCaseTransactionAttributeSource` uses `ConcurrentHashMap` to avoid repeated reflection (✅ IMPLEMENTED)
+6. **Complete test coverage** - Full suite of integration tests validating transactions (✅ IMPLEMENTED)
 
-## 🎯 Recomendación Final
+## 🎯 Final Recommendation
 
-**El enfoque es CORRECTO y VÁLIDO**. Cumple su objetivo de desacoplamiento. Sin embargo:
+**The approach is CORRECT and VALID**. It achieves its decoupling objective. However:
 
-- Para **producción**: Añade las mejoras mencionadas (isolation, noRollbackFor)
-- Para **POC/aprendizaje**: Es suficiente como está
+- For **production**: Add the mentioned improvements (isolation, noRollbackFor)
+- For **POC/learning**: It's sufficient as is
 
-### Mejoras ya implementadas:
-- ✅ **Caché en UseCaseTransactionAttributeSource**: Sistema de caché thread-safe con `ConcurrentHashMap` para optimizar performance
-- ✅ **Bean infrastructure role**: `@Role(BeanDefinition.ROLE_INFRASTRUCTURE)` en `TransactionConfig` para resolver warnings de `BeanPostProcessorChecker`
-- ✅ **Suite completa de tests de integración**: Tests exhaustivos que validan el comportamiento transaccional
+### Already implemented improvements:
+- ✅ **Cache in UseCaseTransactionAttributeSource**: Thread-safe cache system with `ConcurrentHashMap` to optimize performance
+- ✅ **Bean infrastructure role**: `@Role(BeanDefinition.ROLE_INFRASTRUCTURE)` in `TransactionConfig` to resolve `BeanPostProcessorChecker` warnings
+- ✅ **Complete integration test suite**: Comprehensive tests that validate transactional behavior
 
-## 🧪 Tests de Integración Implementados
+## 🧪 Implemented Integration Tests
 
-Se han implementado **3 suites de tests de integración** con **10 tests en total** que validan el correcto funcionamiento del sistema de transacciones personalizado:
+**3 integration test suites** have been implemented with **10 total tests** that validate the correct functioning of the custom transaction system:
 
 ### 1. TransactionRollbackIntegrationTest
-Tests que validan el comportamiento de rollback con la anotación `@UseCaseTransaction`:
+Tests that validate rollback behavior with the `@UseCaseTransaction` annotation:
 
-- **`shouldRollbackOnRuntimeException()`**: Verifica que las transacciones hacen rollback automáticamente cuando ocurre una RuntimeException. El usuario guardado no debe persistir en la base de datos.
+- **`shouldRollbackOnRuntimeException()`**: Verifies that transactions automatically rollback when a RuntimeException occurs. The saved user should not persist in the database.
 
-- **`shouldCommitWhenNoExceptionOccurs()`**: Verifica que las transacciones se commitean exitosamente cuando no hay excepciones. La operación completa sin errores.
+- **`shouldCommitWhenNoExceptionOccurs()`**: Verifies that transactions commit successfully when no exceptions occur. The operation completes without errors.
 
-- **`shouldNotRollbackOnCheckedException()`**: Verifica que las excepciones checked NO causan rollback por defecto (comportamiento estándar de Spring). La transacción se commitea a pesar de la excepción.
+- **`shouldNotRollbackOnCheckedException()`**: Verifies that checked exceptions do NOT cause rollback by default (standard Spring behavior). The transaction commits despite the exception.
 
 ### 2. TransactionPropagationIntegrationTest
-Tests que validan diferentes niveles de propagación transaccional:
+Tests that validate different transaction propagation levels:
 
-- **`shouldUseRequiredPropagation_joinExistingTransaction()`**: Verifica que con `REQUIRED` (default), el método inner se une a la transacción existente. Si el inner falla, toda la transacción hace rollback.
+- **`shouldUseRequiredPropagation_joinExistingTransaction()`**: Verifies that with `REQUIRED` (default), the inner method joins the existing transaction. If the inner fails, the entire transaction rolls back.
 
-- **`shouldUseRequiresNewPropagation_createNewTransaction()`**: Verifica que con `REQUIRES_NEW`, se crea una transacción independiente. Si la transacción inner falla, la outer puede commitear exitosamente.
+- **`shouldUseRequiresNewPropagation_createNewTransaction()`**: Verifies that with `REQUIRES_NEW`, an independent transaction is created. If the inner transaction fails, the outer can commit successfully.
 
-- **`shouldUseMandatoryPropagation_failsWithoutExistingTransaction()`**: Verifica que `MANDATORY` lanza `IllegalTransactionStateException` cuando no existe una transacción activa.
+- **`shouldUseMandatoryPropagation_failsWithoutExistingTransaction()`**: Verifies that `MANDATORY` throws `IllegalTransactionStateException` when no active transaction exists.
 
-- **`shouldUseMandatoryPropagation_worksWithExistingTransaction()`**: Verifica que `MANDATORY` funciona correctamente cuando es llamado dentro de una transacción existente.
+- **`shouldUseMandatoryPropagation_worksWithExistingTransaction()`**: Verifies that `MANDATORY` works correctly when called within an existing transaction.
 
 ### 3. TransactionTimeoutIntegrationTest
-Tests que validan el comportamiento de timeout configurado en la anotación:
+Tests that validate timeout behavior configured in the annotation:
 
-- **`shouldTimeoutWhenExceedingConfiguredTimeout()`**: Verifica que el atributo `timeout` se configura correctamente en la anotación `@UseCaseTransaction`.
+- **`shouldTimeoutWhenExceedingConfiguredTimeout()`**: Verifies that the `timeout` attribute is correctly configured in the `@UseCaseTransaction` annotation.
 
-- **`shouldCompleteWhenWithinTimeout()`**: Verifica que las transacciones que completan dentro del timeout configurado (5 segundos) funcionan correctamente.
+- **`shouldCompleteWhenWithinTimeout()`**: Verifies that transactions that complete within the configured timeout (5 seconds) work correctly.
 
-- **`shouldNotTimeoutWhenTimeoutIsNotSet()`**: Verifica que cuando no se configura timeout (`-1` por defecto), las transacciones no tienen límite de tiempo.
+- **`shouldNotTimeoutWhenTimeoutIsNotSet()`**: Verifies that when timeout is not configured (`-1` by default), transactions have no time limit.
 
-### Resultado de ejecución
+### Execution result
 ```
-✅ 10 tests ejecutados
-✅ 10 tests pasados
-✅ 0 fallos
+✅ 10 tests executed
+✅ 10 tests passed
+✅ 0 failures
 ```
 
-Todos los tests utilizan la anotación `@UseCaseTransaction` personalizada, demostrando que:
-1. El sistema de transacciones personalizado funciona correctamente
-2. Los atributos de la anotación se traducen correctamente a Spring
-3. El desacoplamiento del framework Spring está logrado exitosamente
+All tests use the custom `@UseCaseTransaction` annotation, demonstrating that:
+1. The custom transaction system works correctly
+2. The annotation attributes are correctly translated to Spring
+3. The decoupling from the Spring framework is successfully achieved
 
-## Atributos adicionales a considerar
+## Additional attributes to consider
 
 ### Isolation level
-Para controlar el nivel de aislamiento de las transacciones (READ_COMMITTED, SERIALIZABLE, etc.)
+To control the transaction isolation level (READ_COMMITTED, SERIALIZABLE, etc.)
 
 ### noRollbackFor
-Para especificar excepciones que NO deben provocar rollback (complemento de rollbackFor)
+To specify exceptions that should NOT cause rollback (complement of rollbackFor)
 
 ### Transaction manager qualifier
-Para especificar qué TransactionManager usar cuando hay múltiples (value/transactionManager)
+To specify which TransactionManager to use when there are multiple (value/transactionManager)
 
-### Labels para observability
-Para añadir labels a las métricas de transacciones (disponible en Spring Boot 3+)
+### Labels for observability
+To add labels to transaction metrics (available in Spring Boot 3+)
