@@ -2,19 +2,14 @@
 
 ## ⚠️ Problemas Identificados
 
-### 2. **Falta el atributo `noRollbackFor`**
+### 1. **Falta el atributo `noRollbackFor`**
 Tu anotación solo tiene `rollbackFor` pero no `noRollbackFor`. Esto limita el control sobre qué excepciones NO deben causar rollback.
 
-### 3. **Falta soporte para Isolation Level**
+### 2. **Falta soporte para Isolation Level**
 No puedes controlar el nivel de aislamiento de las transacciones (READ_COMMITTED, SERIALIZABLE, etc.)
 
-### 4. **No soporta múltiples Transaction Managers**
+### 3. **No soporta múltiples Transaction Managers**
 Si en el futuro tienes múltiples bases de datos, no puedes especificar cuál usar.
-
-### 5. **Documentación del enum TransactionPropagation**
-Tu enum interno duplica los valores de Spring. Consideraciones:
-- ¿Realmente necesitas tu propio enum o podrías reusar conceptos?
-- Si lo mantienes, está bien para el desacoplamiento (recomendado para mantener el desacoplamiento)
 
 ## ✅ Lo que está bien hecho
 
