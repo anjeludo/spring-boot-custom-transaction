@@ -1,0 +1,19 @@
+version: 2
+updates:
+  - package-ecosystem: "maven"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+      timezone: "Europe/Madrid"
+    open-pull-requests-limit: 10
+
+    groups:
+      spring-boot-framework:
+        patterns:
+          - "org.springframework.boot:*"
+          - "org.springframework:*"
+
+    commit-message:
+      prefix: "fix(deps)"
