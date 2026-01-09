@@ -5,8 +5,7 @@
 [![Java](https://img.shields.io/badge/Java-25-orange.svg)](https://www.oracle.com/java/)
 [![Spring Boot](https://img.shields.io/badge/Spring%20Boot-4.0.1-brightgreen.svg)](https://spring.io/projects/spring-boot)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
-[![Tests](https://img.shields.io/badge/tests-11%20passed-success.svg)](src/test/java/com/decoupling/springbootcustomtransaction/transaction)
-
+[![Java CI with Maven](https://github.com/anjeludo/spring-boot-custom-transaction/actions/workflows/maven-build.yml/badge.svg)](https://github.com/anjeludo/spring-boot-custom-transaction/actions/workflows/maven-build.yml)
 ## 📋 Table of Contents
 
 - [Overview](#-overview)
